@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
-import { Colours } from './Constants';
+import { Colours, data } from './Constants';
 import { useNavigation } from '@react-navigation/native';
 import Button from './Button';
 import PasswordCard from './PasswordCard';
@@ -73,11 +73,9 @@ export default function Dashboard() {
         </View>
         <View style={styles.main_body2}>
           <ScrollView vertical>
-            <PasswordCard
-              domain={"www.google.com"}
-              name={"kleo"}
-              password={"Himanish"}
-            ></PasswordCard>
+          {data.map((a)=>(
+            <PasswordCard object={a}></PasswordCard>
+          ))}
           </ScrollView>
         </View>
       </View>

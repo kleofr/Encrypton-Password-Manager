@@ -3,7 +3,7 @@ import React from 'react'
 import { Colours, Dim } from './Constants'
 import { useState } from 'react';
 
-export default function PasswordCard({domain,password,name}) {
+export default function PasswordCard({object}) {
   const [showPassword, setshowPassword] = useState(true)
   const [button, setButton] = useState('Show')
   const handleShowPassword = () => {
@@ -42,18 +42,23 @@ export default function PasswordCard({domain,password,name}) {
             marginLeft:20,
             marginBottom:10
 
-          }}>{domain}</Text>
+          }}>{object.domain}</Text>
           <Text style={{
             color:'white',
             fontFamily:'interlight',
-            fontSize:15,
+            fontSize:14,
             marginLeft:20
-          }}>{name}</Text>
+          }}>{object.username}</Text>
           <TextInput readOnly={true} secureTextEntry={showPassword} style={{
             marginLeft:20,
             fontSize:17,
             color:'white',
-          }}>{password}</TextInput>
+            backgroundColor:'black',
+            borderRadius:10,
+            height:35,
+            alignItems:'center',
+            justifyContent:'center'
+          }}>{object.password}</TextInput>
         </View>
         <Text onPress={handleShowPassword} style={{
           color:Colours.primary,

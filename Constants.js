@@ -22,3 +22,13 @@ export const Icons = {
     login:<Icon name='arrow-right' size={20} color={'white'}/>,
     signup:<Icon name='address-card' size={20} color={'white'}/>
 }
+
+export const data = [
+    {domain:'www.google.com', username:'kleo24@gmail.com', password:'Himanish@123'},
+    {domain:'www.facebook.com', username:'8390897087', password:'Himanish123'},
+    {domain:'www.github.com', username:'kleocode', password:'kleo@24'},
+    {domain:'www.instagram.com', username:'2kleo', password:'Himanish@240978'},
+    {domain:'www.tinder.com', username:'HimanishMore', password:'Himanish123'},
+    {domain:'www.epicgames.com', username:'kleololxdded', password:'Himanish@123'}
+
+]
