@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import React from 'react'
 import { Colours, data } from './Constants';
 import { useNavigation } from '@react-navigation/native';
-import Button from './Button';
-import PasswordCard from './PasswordCard';
+import Button from './components/Button';
+import PasswordCard from './components/PasswordCard';
 
 export default function Dashboard() {
     const navigation = useNavigation();

@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, TextInput, Dimensions } from 'react-native'
 import React from 'react'
 import { Colours } from './Constants';
-import TextInp from './TextInp';
-import Button from './Button';
+import TextInp from './components/TextInp';
+import Button from './components/Button';
 import { useNavigation } from '@react-navigation/native';
 
 

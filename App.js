@@ -1,12 +1,12 @@
 import { useFonts } from 'expo-font';
 import { useCallback } from 'react';
-import Welcome from './Welcome';
-import Register from './Register';
-import Sign from './Sign';
+import Welcome from './screens/Welcome';
+import Register from './screens/Register';
+import Sign from './screens/Sign';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Dashboard from './Dashboard';
-import Passwords from './Passwords';
+import Dashboard from './screens/Dashboard';
+import Passwords from './screens/Passwords';
 
 export default function App() {
   const [fontsLoaded] = useFonts({

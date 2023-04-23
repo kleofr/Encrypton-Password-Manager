@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, TouchableHighlight, Dimensions } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Colours, Icons, Dim } from './Constants'
+import { Colours, Icons, Dim } from '../Constants'
 
 export default function Button({btnText, btnPress}) {
   return (

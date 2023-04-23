@@ -1,8 +1,8 @@
 
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Dimensions, TextInput } from 'react-native';
-import { Colours, Icons, Logo } from './Constants';
-import Button from './Button';
+import { Colours, Icons, Logo } from '../Constants';
+import Button from '../components/Button';
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import TextInp from './TextInp';
-import Button from './Button';
+import TextInp from './components/TextInp';
+import Button from './components/Button';
 import { Colours, Dim } from './Constants';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
