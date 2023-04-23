@@ -1,6 +1,8 @@
 const http = require("http");
 const mysql = require("mysql");
-const { spawn } = require("child_process");
+const {
+    spawn
+} = require("child_process");
 
 function getData(type, original_data, callback) {
     let py = spawn("python", [
@@ -47,269 +49,321 @@ function getData(type, original_data, callback) {
 // let server = http.createServer(function (req, res) {
 // }).listen(8000);
 
-let server = http.createServer(function (req, res) {
-  let con = mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "root",
-      database: "passwordmanager",
-  });
+let server = http.createServer(function(req, res) {
+    let con = mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "root",
+        database: "passwordmanager",
+    });
 
-  con.connect(function (err) {
-    function verifyLogin(
-      txt_unverified_username,
-      txt_unverified_password,
-      txt_name,
-      callback
-  ) {
-      let q = "SELECT * FROM login_creds WHERE Name = ?";
-      con.query(q, [txt_name], (error, data) => {
-          let bool = false;
-          for (let i = 0; i < data.length; i++) {
-              let row = data[i];
-              getData(
-                  "decrypt",
-                  [row.UserName, row.Password],
-                  (error, decrypted_data) => {
-                      if (
-                          decrypted_data[0] === txt_unverified_username &&
-                          decrypted_data[1] === txt_unverified_password
-                      ) {
-                          bool = true;
-                          callback(bool);
-                      } else if (i === data.length - 1) {
-                          callback(bool);
-                      }
-                  }
-              );
-          }
-      });
-  }
-  function removeDuplicates(array) {
-      let result = [];
-      let map = new Map();
-      
-      for (let i = 0; i < array.length; i++) {
-        let obj = array[i];
-        let key = Object.values(obj).join('|');
-        if (!map.has(key)) {
-          map.set(key, true);
-          result.push(obj);
-        }
-      }
-      
-      return result;
-  }
-  function retrieveAllPasswords(txt_username, callback) {
-      txt_username = txt_username.trim();
-      let q = "SELECT AccountUserName FROM passwords";
-      con.query(q, (error, result) => {
-          if (error) return callback(error);
-
-          let objects = [];
-
-          for (let i = 0; i < result.length; i++) {
-              let element = result[i];
-
-              getData("decrypt", [element.AccountUserName], (error, data) => {
-                  if (error) return callback(error);
-
-                  if (data[0] == txt_username) {
-                      q = "SELECT * FROM passwords WHERE AccountUserName = ?";
-                      con.query(
-                          q,
-                          [element.AccountUserName],
-                          (error, data) => {
-                              if (error) return callback(error);
-
-                              data.forEach((row) => {
-                                  let obj = {
-                                      UserName: row.UserName,
-                                      Domain: row.Domain,
-                                      Password: row.Password,
-                                  };
-                                  objects.push(obj);
-                              });
-
-                              if (i === result.length - 1) {
-                                  // If this is the last iteration, call the callback with the final result
-                                  return callback(null, objects);
-                              }
-                          }
-                      );
-                  } else {
-                      if (i === result.length - 1) {
-                          // If no match is found and this is the last iteration, call the callback with an error message
-                          return callback("No matching username found");
-                      }
-                  }
-              });
-          }
-      });
-      return callback("No matching username found");
-  }
-  function decryptPasswordObjects(objects, callback) {
-      if ((objects == {})) return callback("No passwords matched");
-      let counter = 0;
-      objects.forEach((object) => {
-          getData(
-              "decrypt",
-              [object.UserName, object.Password, object.Domain],
-              (error, data) => {
-                  if (error) return callback(error);
-                  object.UserName = data[0];
-                  object.Password = data[1];
-                  object.Domain = data[2];
-                  counter++;
-                  if (counter === objects.length) {
-                      return callback(null, objects);
-                  }
-              }
-          );
-      });
-  }
-  function getAllDataOfAUser(txt_UserName) {
-      retrieveAllPasswords(txt_UserName, (error, data) => {
-          if (data == undefined) console.log("No passwords matched");
-          else {
-              decryptPasswordObjects(data, (error, data) => {
-                  console.log(removeDuplicates(data));
-              });
-          }
-      });
-  }
-  function storeAPassword(accountusername, txt_username, domain, password, callback) {
-    let q = "SELECT AccountUserName from passwords"
-    con.query(q, (error, AccountUserNames) => {
-      if (error) {
-        return callback(error);
-      }
-      if(AccountUserNames.length == 0){
-        getData("encrypt", [accountusername, txt_username, domain, password], (error, encrypted_data) => {
-            if (error) {
-              return callback(error);
-            }
-
-            let q = "INSERT INTO passwords(AccountUserName, UserName, Domain, Password) VALUES (?, ?, ?, ?)"
-            con.query(q, [encrypted_data[0], encrypted_data[1], encrypted_data[2], encrypted_data[3]], (error, result) => {
-              if (error) {
-                return callback(error);
-              }
-
-              if (result.affectedRows == 1) {
-                return callback("Password has been stored");
-              } else {
-                return callback("Operation failed");
-              }
-            })
-          })
-      }
-      for (let i = 0; i < AccountUserNames.length; i++) {
-        getData(
-          "decrypt",
-          [AccountUserNames[i].AccountUserName],
-          (error, decryptedAccountUserName) => {
-            if (error) {
-              return callback(error);
-            }
-            if (decryptedAccountUserName == accountusername) {
-              let q = "SELECT * FROM passwords WHERE AccountUserName = ?"
-              con.query(q, [AccountUserNames[i].AccountUserName], (error, data) => {
-                if (error) {
-                  return callback(error);
-                }
-  
-                let found = false;
-                for (let j = 0; j < data.length; j++) {
-                  let row = data[j];
-                  getData("decrypt", [row.Domain, row.UserName, row.Password], (error, decrypted_data) => {
-                    if (error) {
-                      return callback(error);
-                    }
-  
-                    if (decrypted_data[0] == domain && decrypted_data[1] == txt_username && decrypted_data[2] == password) {
-                      found = true;
-                      
-                      return callback("The entered creds have already been stored");
-                    } else if (decrypted_data[0] == domain && decrypted_data[1] == txt_username) {
-                      getData("encrypt", [password], (error, encrypted_password) => {
-                        if (error) {
-                          return callback(error);
+    con.connect(function(err) {
+        function verifyLogin(
+            txt_unverified_username,
+            txt_unverified_password,
+            txt_name,
+            callback
+        ) {
+            let q = "SELECT * FROM login_creds WHERE Name = ?";
+            con.query(q, [txt_name], (error, data) => {
+                let bool = false;
+                for (let i = 0; i < data.length; i++) {
+                    let row = data[i];
+                    getData(
+                        "decrypt",
+                        [row.UserName, row.Password],
+                        (error, decrypted_data) => {
+                            if (
+                                decrypted_data[0] === txt_unverified_username &&
+                                decrypted_data[1] === txt_unverified_password
+                            ) {
+                                bool = true;
+                                callback(bool);
+                            } else if (i === data.length - 1) {
+                                callback(bool);
+                            }
                         }
-  
-                        let q = "UPDATE passwords SET password = ? WHERE AccountUserName = ? AND UserName = ? AND Domain = ?"
-                        con.query(q, [encrypted_password[0], AccountUserNames[i].AccountUserName, row.UserName, row.Domain], (error, result) => {
-                          if (error) {
-                            return callback(error);
-                          }
-  
-                          if (result.affectedRows == 1) {
-                            return callback("Password has been changed");
-                          } else {
-                            return callback("Operation failed");
-                          }
-                        })
-                      })
-                    }
-                  });
+                    );
                 }
-  
-                if (!found) {
-                  getData("encrypt", [accountusername, txt_username, domain, password], (error, encrypted_data) => {
-                    if (error) {
-                      return callback(error);
+            });
+        }
+
+        function removeDuplicates(array) {
+            let result = [];
+            let map = new Map();
+
+            for (let i = 0; i < array.length; i++) {
+                let obj = array[i];
+                let key = Object.values(obj).join('|');
+                if (!map.has(key)) {
+                    map.set(key, true);
+                    result.push(obj);
+                }
+            }
+
+            return result;
+        }
+
+        function retrieveAllPasswords(txt_username, callback) {
+            txt_username = txt_username.trim();
+            let q = "SELECT AccountUserName FROM passwords";
+            con.query(q, (error, result) => {
+                if (error) return callback(error);
+
+                let objects = [];
+
+                for (let i = 0; i < result.length; i++) {
+                    let element = result[i];
+
+                    getData("decrypt", [element.AccountUserName], (error, data) => {
+                        if (error) return callback(error);
+
+                        if (data[0] == txt_username) {
+                            q = "SELECT * FROM passwords WHERE AccountUserName = ?";
+                            con.query(
+                                q,
+                                [element.AccountUserName],
+                                (error, data) => {
+                                    if (error) return callback(error);
+
+                                    data.forEach((row) => {
+                                        let obj = {
+                                            UserName: row.UserName,
+                                            Domain: row.Domain,
+                                            Password: row.Password,
+                                        };
+                                        objects.push(obj);
+                                    });
+
+                                    if (i === result.length - 1) {
+                                        // If this is the last iteration, call the callback with the final result
+                                        return callback(null, objects);
+                                    }
+                                }
+                            );
+                        } else {
+                            if (i === result.length - 1) {
+                                // If no match is found and this is the last iteration, call the callback with an error message
+                                return callback("No matching username found");
+                            }
+                        }
+                    });
+                }
+            });
+            return callback("No matching username found");
+        }
+
+        function decryptPasswordObjects(objects, callback) {
+            if ((objects == {})) return callback("No passwords matched");
+            let counter = 0;
+            objects.forEach((object) => {
+                getData(
+                    "decrypt",
+                    [object.UserName, object.Password, object.Domain],
+                    (error, data) => {
+                        if (error) return callback(error);
+                        object.UserName = data[0];
+                        object.Password = data[1];
+                        object.Domain = data[2];
+                        counter++;
+                        if (counter === objects.length) {
+                            return callback(null, objects);
+                        }
                     }
-                    if(!found){
+                );
+            });
+        }
+
+        function getAllDataOfAUser(txt_UserName) {
+            retrieveAllPasswords(txt_UserName, (error, data) => {
+                if (data == undefined) console.log("No passwords matched");
+                else {
+                    decryptPasswordObjects(data, (error, data) => {
+                        console.log(removeDuplicates(data));
+                    });
+                }
+            });
+        }
+
+        function storeAPassword(accountusername, txt_username, domain, password, callback) {
+            let q = "SELECT AccountUserName from passwords"
+            con.query(q, (error, AccountUserNames) => {
+                if (error) {
+                    return callback(error);
+                }
+                if (AccountUserNames.length == 0) {
+                    getData("encrypt", [accountusername, txt_username, domain, password], (error, encrypted_data) => {
+                        if (error) {
+                            return callback(error);
+                        }
+
                         let q = "INSERT INTO passwords(AccountUserName, UserName, Domain, Password) VALUES (?, ?, ?, ?)"
                         con.query(q, [encrypted_data[0], encrypted_data[1], encrypted_data[2], encrypted_data[3]], (error, result) => {
-                          if (error) {
-                            return callback(error);
-                          }
-      
-                          if (result.affectedRows == 1) {
-                            return callback("Password has been stored");
-                          } else {
-                            return callback("Operation failed");
-                          }
+                            if (error) {
+                                return callback(error);
+                            }
+
+                            if (result.affectedRows == 1) {
+                                return callback("Password has been stored");
+                            } else {
+                                return callback("Operation failed");
+                            }
                         })
-                    }
-                  })
+                    })
                 }
-              })
-            }
-          }
-        )
-      }
-    })
-  }
-    let {url} = req;
-    if(url === "./login"){
-      let { txt_unverified_username , txt_unverified_password , txt_name} = req.body
-      verifyLogin(txt_unverified_username , txt_unverified_password , txt_name,(error,result)=>{
-        console.log(result);
-      })
-    }
-    else if(url === "./main"){
-      let { txt_unverified_username } = req.body
-      console.log(getAllDataOfAUser(txt_unverified_username));
-    }   
-    else if(url === "./add"){
-      let {accountusername, txt_username, domain, password, callback} = req.body
-      storeAPassword(accountusername, txt_username, domain, password,(error,result)=>{
-        console.log(result)
-      })
-    }
+                for (let i = 0; i < AccountUserNames.length; i++) {
+                    getData(
+                        "decrypt",
+                        [AccountUserNames[i].AccountUserName],
+                        (error, decryptedAccountUserName) => {
+                            if (error) {
+                                return callback(error);
+                            }
+                            if (decryptedAccountUserName == accountusername) {
+                                let q = "SELECT * FROM passwords WHERE AccountUserName = ?"
+                                con.query(q, [AccountUserNames[i].AccountUserName], (error, data) => {
+                                    if (error) {
+                                        return callback(error);
+                                    }
 
-      // verifyLogin("KrishNana","Nana2004RCBfan","Krish",(data)=>{
-      //   console.log(data);
-      // })
-      // getAllDataOfAUser("MihirP007")
-      
-        
-      //   storeAPassword("MihirP007", "Phoenix", "www.valorant.com", "Mihir123@", (result) => {
-      //     console.log(result);
-      //   });
-        
+                                    let found = false;
+                                    for (let j = 0; j < data.length; j++) {
+                                        let row = data[j];
+                                        getData("decrypt", [row.Domain, row.UserName, row.Password], (error, decrypted_data) => {
+                                            if (error) {
+                                                return callback(error);
+                                            }
 
-  });
+                                            if (decrypted_data[0] == domain && decrypted_data[1] == txt_username && decrypted_data[2] == password) {
+                                                found = true;
+
+                                                return callback("The entered creds have already been stored");
+                                            } else if (decrypted_data[0] == domain && decrypted_data[1] == txt_username) {
+                                                getData("encrypt", [password], (error, encrypted_password) => {
+                                                    if (error) {
+                                                        return callback(error);
+                                                    }
+
+                                                    let q = "UPDATE passwords SET password = ? WHERE AccountUserName = ? AND UserName = ? AND Domain = ?"
+                                                    con.query(q, [encrypted_password[0], AccountUserNames[i].AccountUserName, row.UserName, row.Domain], (error, result) => {
+                                                        if (error) {
+                                                            return callback(error);
+                                                        }
+
+                                                        if (result.affectedRows == 1) {
+                                                            return callback("Password has been changed");
+                                                        } else {
+                                                            return callback("Operation failed");
+                                                        }
+                                                    })
+                                                })
+                                            }
+                                        });
+                                    }
+
+                                    if (!found) {
+                                        getData("encrypt", [accountusername, txt_username, domain, password], (error, encrypted_data) => {
+                                            if (error) {
+                                                return callback(error);
+                                            }
+                                            if (!found) {
+                                                let q = "INSERT INTO passwords(AccountUserName, UserName, Domain, Password) VALUES (?, ?, ?, ?)"
+                                                con.query(q, [encrypted_data[0], encrypted_data[1], encrypted_data[2], encrypted_data[3]], (error, result) => {
+                                                    if (error) {
+                                                        return callback(error);
+                                                    }
+
+                                                    if (result.affectedRows == 1) {
+                                                        return callback("Password has been stored");
+                                                    } else {
+                                                        return callback("Operation failed");
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                    )
+                }
+            })
+        }
+
+        function register(txt_unverified_username, txt_unverified_password, txt_name, callback) {
+            let q = "SELECT UserName FROM login_creds"
+            con.query(q, (error, rows) => {
+                let found = false;
+                for (let i = 0; i < rows.length; i++) {
+                    getData("decrypt", [rows[i].UserName], (error, decrypted_username) => {
+                        if (decrypted_username == txt_unverified_username) {
+                            found = true;
+                            return callback("This User Name is already registered");
+                        }
+                        if (i == rows.length - 1 && !found) {
+                            let q = "INSERT INTO login_creds(UserName, Password, Name) VALUES (?, ?, ?)";
+                            getData("encrypt", [txt_unverified_username, txt_unverified_password, txt_name], (error, encrypted_data) => {
+                                con.query(q, [encrypted_data[0], encrypted_data[1], txt_name], (error, data) => {
+                                    if (data != []) return callback("User is Registered");
+                                    return callback("error");
+                                });
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+        let {
+            url
+        } = req;
+        if (url === "./login") {
+            let {
+                txt_unverified_username,
+                txt_unverified_password,
+                txt_name
+            } = req.body
+            verifyLogin(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
+                console.log(result);
+            })
+        } else if (url === "./register") {
+            let {
+                txt_unverified_username,
+                txt_unverified_password,
+                txt_name
+            } = req.body
+            register(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
+                console.log(result)
+            })
+        } else if (url === "./main") {
+            let {
+                txt_unverified_username
+            } = req.body
+            console.log(getAllDataOfAUser(txt_unverified_username));
+        } else if (url === "./add") {
+            let {
+                accountusername,
+                txt_username, 
+                domain,
+                password,
+                callback
+            } = req.body
+            storeAPassword(accountusername, txt_username, domain, password, (error, result) => {
+                console.log(result)
+            })
+        }
+
+
+        // verifyLogin("KrishNana","Nana2004RCBfan","Krish",(data)=>{
+        //   console.log(data);
+        // })
+        // getAllDataOfAUser("MihirP007")
+
+
+        //   storeAPassword("MihirP007", "Phoenix", "www.valorant.com", "Mihir123@", (result) => {
+        //     console.log(result);
+        //   });
+
+
+    });
 }).listen(8000);
