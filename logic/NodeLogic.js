@@ -6,7 +6,7 @@ const {
 
 function getData(type, original_data, callback) {
     let py = spawn("python", [
-        "C:/Users/MIHIR/.vscode/password-manager/AES.py",
+        "./AES.py",
         type,
         original_data,
     ]);
@@ -324,7 +324,7 @@ let server = http.createServer(function(req, res) {
                 txt_name
             } = req.body
             verifyLogin(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
-                console.log(result);
+                console.log(result); //boolean
             })
         } else if (url === "./register") {
             let {
@@ -333,7 +333,7 @@ let server = http.createServer(function(req, res) {
                 txt_name
             } = req.body
             register(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
-                console.log(result)
+                console.log(result) //
             })
         } else if (url === "./main") {
             let {

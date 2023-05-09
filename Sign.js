@@ -6,27 +6,63 @@ import { Colours, Dim } from './Constants';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { client } from './Client';
+
+const API_URL = 'http://192.168.1.6:3000';
 
 export default function Sign() {
     const [username,setUsername] = useState('')
     const [password,setPassword] = useState('')
     const navigation = useNavigation();
-    const handleLoginPress = () => {
-        navigation.replace('Dashboard')
-        // if (!(username == '' || password == '')) {
-        //     if(username == '2kleo' && password == 'Himanish123'){
-        //         AsyncStorage.setItem('username',username)
-        //         navigation.replace('Dashboard')
-        //     }
-        //     else{
-        //         alert('Invalid Credentials')
-        //     }
-            
-        // }else{
-        //     alert('Both fields are required')
-        // }
-        // navigation.navigate('Dashboard');
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    // const handleLogin = async () => {
+    //   try {
+    //     const response = await axios.post(`${API_URL}/login`, { username, password });
+    //     const { success, token, message } = response.data;
+    //     if (success) {
+    //       console.log('Logged in successfully:', token);
+    //       // TODO: navigate to protected screen or set auth token in state
+    //     } else {
+    //       console.log(message);
+    //     }
+    //   } catch (err) {
+    //     console.error('Login failed:', err);
+    //     alert('An error occurred while logging in');
+    //   }
+    // };
+
+    
+    const handleLoginPress = async () => {
+      axios.post(`${API_URL}/login`, { username, password })
+      .then((res) => {
+        setLoggedIn(res.data);
+        if(loggedIn){
+          console.log('logged in successfully')
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     };
+    // const handleLoginPress = async () => {
+    //   try{
+    //     axios.post(`${API_URL}/login`,{
+    //       username:username,
+    //       password:password
+    //     })
+    //     .then(function (res) {
+    //       console.log(res.data.message)
+    //     })
+    //     .catch (function (err){
+    //       console.log(err)
+    //     })
+    //   }
+    //   catch(err){
+
+    //   }
+    // };
     const handleUsernameInputChange = (username) => {
         setUsername(username)
     };
@@ -53,12 +89,12 @@ export default function Sign() {
         >
           <Text
             style={{
-              fontFamily: "intersemibold",
+              fontFamily: "intertbold",
               color: "white",
               fontSize: 30,
             }}
           >
-            Log into your account
+            Log into your account.
           </Text>
         </View>
         <View style={styles.inpcontainer}>
@@ -85,12 +121,16 @@ export default function Sign() {
         ></View>
       </View>
       <View style={styles.footer}>
-        <View style={{}}>
+        <View style={{
+          width:Dim.imgWidth,
+          height:Dim.imgHeight/8,
+          alignItems:'center',
+          justifyContent:'space-between'
+        }}>
           <Button btnText={"Log in"} btnPress={handleLoginPress}></Button>
-        </View>
-        <Text
+          <Text
           style={{
-            fontFamily: "interlight",
+            fontFamily: "intertmedium",
             display: "flex",
             color: "white",
             alignItems: "center",
@@ -101,6 +141,7 @@ export default function Sign() {
           <Text
             onPress={handleRegisterPress}
             style={{
+              fontFamily:'intertbold',
               color: Colours.primary,
             }}
           >
@@ -108,6 +149,8 @@ export default function Sign() {
             Sign up
           </Text>
         </Text>
+        </View>
+        
       </View>
     </View>
   );
@@ -139,7 +182,9 @@ const styles = StyleSheet.create({
     },
     footer:{
         flex: 2,
-        //backgroundColor:'#d0d0d0',
+        borderTopRightRadius:30,
+        borderTopLeftRadius:30,
+        backgroundColor:'#1C1C1C',
         display:'flex',
         alignItems: 'center',
         justifyContent: 'center',

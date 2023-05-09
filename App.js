@@ -1,19 +1,20 @@
 import { useFonts } from 'expo-font';
 import { useCallback } from 'react';
-import Welcome from './screens/Welcome';
-import Register from './screens/Register';
-import Sign from './screens/Sign';
+import Welcome from './Welcome';
+import Register from './Register';
+import Sign from './Sign';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Dashboard from './screens/Dashboard';
-import Passwords from './screens/Passwords';
+import Dashboard from './Dashboard';
+import Passwords from './Passwords';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'intersemibold':require('./assets/fonts/intersemibold.ttf'),
-    'intermedium':require('./assets/fonts/intermedium.ttf'),
-    'interregular':require('./assets/fonts/interregular.ttf'),
-    'interlight':require('./assets/fonts/interlight.ttf'),
+    'intertbold':require('./assets/fonts/intertbold.ttf'),
+    'intertmedium':require('./assets/fonts/intertmedium.ttf'),
+    'intertregular':require('./assets/fonts/intertregular.ttf'),
+    'intertblack':require('./assets/fonts/intertblack.ttf'),
+    'fragmono':require('./assets/fonts/fragmentmono.ttf'),
   });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {

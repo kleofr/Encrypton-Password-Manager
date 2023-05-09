@@ -1,12 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function ButtonCard() {
+export default function CardSlider() {
   return (
-    <View style={{
-        
-    }}>
-      <Text></Text>
+    <View>
+      <Text>CardSlider</Text>
     </View>
   )
 }

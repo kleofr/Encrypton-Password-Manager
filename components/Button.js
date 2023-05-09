@@ -11,14 +11,13 @@ export default function Button({btnText, btnPress}) {
         backgroundColor:Colours.primary,
         alignItems:'center',
         justifyContent:'center',
-        width:Dim.imgWidth/1.1,
+        width:Dim.imgWidth/1.2,
         height:Dim.imgHeight/13,
         borderRadius:30,
-        marginBottom:15
     }} onPress={btnPress}>
         <Text style={{
             fontSize:16,
-            fontFamily:'intermedium',
+            fontFamily:'intertbold',
             color:'white'
         }}>
             {btnText}

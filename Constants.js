@@ -6,7 +6,13 @@ export const Colours = {
     background:'#191825',
     dark_gray:'#2b2b2a',
 }
+export const splashImg = [
+    {key:1, img:require('./assets/1bg.png')},
+    {key:2, img:require('./assets/2bg.png')},
+    {key:3, img:require('./assets/3bg.png')},
+]
 export const Logo = {
+
     logo:require('./assets/logo_white.png'),
     bgtext:require('./assets/bgtext.png'),
     bgwithsvg:require('./assets/bgwithsvg.png')
@@ -24,11 +30,11 @@ export const Icons = {
 }
 
 export const data = [
-    {domain:'www.google.com', username:'kleo24@gmail.com', password:'Himanish@123'},
-    {domain:'www.facebook.com', username:'8390897087', password:'Himanish123'},
-    {domain:'www.github.com', username:'kleocode', password:'kleo@24'},
-    {domain:'www.instagram.com', username:'2kleo', password:'Himanish@240978'},
-    {domain:'www.tinder.com', username:'HimanishMore', password:'Himanish123'},
-    {domain:'www.epicgames.com', username:'kleololxdded', password:'Himanish@123'}
+    {domain:'Google', username:'kleo24@gmail.com', password:'Himanish@123'},
+    {domain:'Facebook', username:'8390897087', password:'Himanish123'},
+    {domain:'Github', username:'kleocode', password:'kleo@24'},
+    {domain:'Instagram', username:'2kleo', password:'Himanish@240978'},
+    {domain:'Tinder', username:'HimanishMore', password:'Himanish123'},
+    {domain:'Epic Games', username:'kleololxdded', password:'Himanish@123'}
 
 ]

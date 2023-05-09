@@ -1,18 +1,30 @@
-import { View, Text, TextInput } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Colours, Dim } from './Constants'
+import { Colours, Dim } from '../Constants'
 import { useState } from 'react';
 
 export default function PasswordCard({object}) {
-  const [showPassword, setshowPassword] = useState(true)
+  const [Color, setColor] = useState('#666666')
+  const [fontSize,setfontSize] = useState(12)
+  const [fontChange, setfontChange] = useState('intertmedium')
+  const [Password,setPassword] = useState(object.username)
+  const [showPassword, setshowPassword] = useState(false)
   const [button, setButton] = useState('Show')
   const handleShowPassword = () => {
     if(showPassword == true){
       setButton('Hide')
       setshowPassword(false)
+      setPassword(object.password)
+      setfontChange('fragmono')
+      setColor('white')
+      setfontSize(15)
     }else{
       setButton('Show')
       setshowPassword(true)
+      setPassword(object.username)
+      setfontChange('intertmedium')
+      setColor('#666666')
+      setfontSize(12)
     }
   };
   return (
@@ -20,15 +32,15 @@ export default function PasswordCard({object}) {
       display:'flex',
       flexDirection:'row',
       marginBottom:10,
-      borderRadius:10,
+      borderRadius:20,
       backgroundColor:'#0a0a0a',
-      width:Dim.imgWidth/1.13,
-      height:Dim.imgHeight/8,
+      width:Dim.imgWidth/1.1,
+      height:Dim.imgHeight/12,
       justifyContent:'space-between'
       
     }}>
       <View style={{
-        width:Dim.imgWidth/1.13,
+        width:Dim.imgWidth,
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
@@ -36,36 +48,38 @@ export default function PasswordCard({object}) {
       }}>
         <View>
           <Text style={{
-            color:'#666666',
-            fontFamily:'interlight',
-            fontSize:10,
+            color:'white',
+            fontFamily:'intertbold',
+            fontSize:13,
             marginLeft:20,
-            marginBottom:10
 
           }}>{object.domain}</Text>
+
+          <TextInput readOnly={true} selectTextOnFocus={true} style={{
+            marginLeft:20,
+            fontSize:fontSize,
+            color: Color,
+            alignItems:'center',
+            justifyContent:'center',
+            fontFamily: fontChange
+          }}>{Password}</TextInput>
+        </View>
+        <TouchableOpacity onPress={handleShowPassword} style={{
+          backgroundColor:Colours.dark_gray,
+          width:Dim.imgWidth/5,
+          height:Dim.imgHeight/12,
+          borderRadius:20,
+          marginRight:30,
+          justifyContent:'center',
+          alignItems:'center',
+        }}>
           <Text style={{
             color:'white',
-            fontFamily:'interlight',
-            fontSize:14,
-            marginLeft:20
-          }}>{object.username}</Text>
-          <TextInput readOnly={true} secureTextEntry={showPassword} style={{
-            marginLeft:20,
-            fontSize:17,
-            color:'white',
-            backgroundColor:'black',
-            borderRadius:10,
-            height:35,
-            alignItems:'center',
-            justifyContent:'center'
-          }}>{object.password}</TextInput>
-        </View>
-        <Text onPress={handleShowPassword} style={{
-          color:Colours.primary,
-          fontFamily:'interregular',
-          marginRight:20
-        }}>{button}</Text>
+            fontFamily:'intertmedium',
+          }}>{button}</Text>
+        </TouchableOpacity>
       </View>
+      
     </View>
   )
 }

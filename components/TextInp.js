@@ -1,13 +1,14 @@
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native'
 import React from 'react'
-import { Colours, Dim } from './Constants';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Colours, Dim } from '../Constants';
 
 export default function TextInp({placeholder, type, name, value, oCText, pass = false}) {
   return (
     <View>
       <Text
         style={{
-          fontFamily: "interlight",
+          fontFamily: "intertmedium",
           fontSize: 14,
           color: "white",
           marginStart: 10,
@@ -17,6 +18,7 @@ export default function TextInp({placeholder, type, name, value, oCText, pass = 
         {name}
       </Text>
       <TextInput
+        
         style={styles.txtinp}
         placeholder={placeholder}
         secureTextEntry={pass}
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
         borderRadius:10,
         paddingLeft: 20,
         marginBottom: 15,
-        fontFamily:'interregular',
+        fontFamily:'intertregular',
         fontSize: 13,
     },
 });
