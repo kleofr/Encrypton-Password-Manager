@@ -53,7 +53,6 @@ let con = mysql.createConnection({
     database: "passwordmanager",
 });
 
-
 con.connect(function(err) {
 
     function verifyLogin(
@@ -344,7 +343,7 @@ con.connect(function(err) {
     app.post("/add",(req,res)=>{
         let {
             accountusername,
-            txt_username, 
+            username, 
             domain,
             password
         } = req.body
