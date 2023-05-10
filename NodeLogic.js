@@ -55,36 +55,24 @@ let con = mysql.createConnection({
 
 con.connect(function(err) {
     
-    function verifyLogin(
-        txt_unverified_username,
-        txt_unverified_password,
-        txt_name,
-        callback
-    ) {
-        
+    function verifyLogin(txt_unverified_username, txt_unverified_password, txt_name, callback) {
         let q = "SELECT * FROM login_creds WHERE Name = ?";
         con.query(q, [txt_name], (error, data) => {
-            let bool = false;   
-            for (let i = 0; i < data.length; i++) {
-                let row = data[i];
-                getData(
-                    "decrypt",
-                    [row.UserName, row.Password],
-                    (error, decrypted_data) => {
-                        if (
-                            decrypted_data[0] === txt_unverified_username &&
-                            decrypted_data[1] === txt_unverified_password
-                        ) {
-                            bool = true;
-                            callback(bool);
-                        } else if (i === data.length - 1) {
-                            callback(bool);
-                        }
-                    }
-                );
-            }
+          let isValid = false;
+          for (let i = 0; i < data.length; i++) {
+            let row = data[i];
+            getData("decrypt", [row.UserName, row.Password], (error, decrypted_data) => {
+              if (decrypted_data[0] === txt_unverified_username && decrypted_data[1] === txt_unverified_password) {
+                isValid = true;
+              }
+              if (i >= data.length - 1) {
+                callback(isValid);
+              }
+            });
+          }
         });
-    }
+      }
+      
 
     function removeDuplicates(array) {
         let result = [];
@@ -319,10 +307,10 @@ con.connect(function(err) {
             name
         } = req.body
         console.log([username, password, name])
-        verifyLogin(username,password,name, (error, result) => {
-            console.log("The login is :"+result)
-            res.json({"status":result});
-        })
+        verifyLogin(username, password, name, (isValid) => {
+            console.log("The final truth :", isValid);
+            res.json({"MyStatus": isValid});
+          });
     });
     app.post("/register",(req,res)=>{
         let {

@@ -18,12 +18,24 @@ export default function Sign() {
     const navigation = useNavigation();
     const [loggedIn, setLoggedIn] = useState(false);
 
+    if(AsyncStorage.getItem('username')==username){
+      navigation.navigate('Dashboard')
+    }
     const handleLoginPress = async () => {
       console.log([name,username,password])
-      // navigation.navigate('Dashboard')
+      // 
       axios.post(`${API_URL}/login`, { name, username, password })
       .then((res) => {
-        console.log(res)
+        let result = res.data;
+        let bool = result.MyStatus;
+        console.log()
+        if(bool){
+          AsyncStorage.setItem('username', username);
+          AsyncStorage.setItem('password', password);
+          navigation.navigate('Dashboard')
+        }else{
+          alert('Incorrect Credentials')
+        }
       })
       .catch((err) => {
         console.log(err);
