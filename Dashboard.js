@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     },
     footer:{
       flex:1,
-      backgroundColor:'#1C1C1C',
+      backgroundColor:'#c',
       borderTopRightRadius:30,
       borderTopLeftRadius:30,
       justifyContent: 'center',

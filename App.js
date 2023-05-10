@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Dashboard from './Dashboard';
 import Passwords from './Passwords';
+import AddPassword from './AddPassword';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -33,11 +34,12 @@ export default function App() {
       <Stack.Navigator screenOptions={{
         headerShown:false,
       }}>
-        <Stack.Screen name='Home' component={Welcome}></Stack.Screen>
+        {/* <Stack.Screen name='Home' component={Welcome}></Stack.Screen>
         <Stack.Screen name='Register' component={Register}></Stack.Screen>
-        <Stack.Screen name='Login' component={Sign}></Stack.Screen>
-        <Stack.Screen name='Dashboard' component={Dashboard}></Stack.Screen>
-        <Stack.Screen name='Passwords' component={Passwords}></Stack.Screen>
+        <Stack.Screen name='Login' component={Sign}></Stack.Screen> */}
+        {/* <Stack.Screen name='Dashboard' component={Dashboard}></Stack.Screen> */}
+        <Stack.Screen name='AddPassword' component={AddPassword}></Stack.Screen>
+        {/* <Stack.Screen name='Passwords' component={Passwords}></Stack.Screen> */}
       </Stack.Navigator>
     </NavigationContainer>
     
