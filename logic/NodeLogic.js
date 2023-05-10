@@ -321,7 +321,7 @@ con.connect(function(err) {
     // verifyLogin("KrishNana","Nana2004RCBfan","Krish",(data)=>{
     //               console.log(data);
     //             })
-    app.get("/login",(req,res)=>{
+    app.post("/login",(req,res)=>{
         let {
             txt_unverified_username,
             txt_unverified_password,
@@ -331,7 +331,7 @@ con.connect(function(err) {
             res.json({"status":result});
         })
     });
-    app.get("/register",(req,res)=>{
+    app.post("/register",(req,res)=>{
         let {
             txt_unverified_username,
             txt_unverified_password,
@@ -342,7 +342,7 @@ con.connect(function(err) {
             else res.json({"status":false,"error_message":result});
         })
     });
-    app.get("/home",(req,res)=>{
+    app.post("/home",(req,res)=>{
         let {
             txt_unverified_username
             } = req.body
@@ -350,7 +350,7 @@ con.connect(function(err) {
         if(result != "No passwords matched") res.json({"status":true,"data":result})
         else res.json({"status":false,"data":result})
     });
-    app.get("/add",(req,res)=>{
+    app.post("/add",(req,res)=>{
         let {
             accountusername,
             txt_username, 
