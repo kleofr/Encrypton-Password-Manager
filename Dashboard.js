@@ -2,15 +2,15 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import React, { useState } from 'react'
 import { Colours, Dim, data } from './Constants';
 import { useNavigation } from '@react-navigation/native';
-import PasswordCard from './components/PasswordCard';
 import ButtonDash from './components/ButtonDash';
 import Button from './components/Button'
-import TextInp from './components/TextInp';
-import PasswordPopup from './components/PasswordPopup';
+import Dropdown from './components/Dropdown';
+import AddPasswordModal from './components/AddPassword';
 
 export default function Dashboard() {
     const navigation = useNavigation();
-    const [isVisible, setisVisible] = useState([false]);
+    const [isVisible, setisVisible] = useState(false);
+    
     const handleNewPassword = () => {
       setisVisible(true)
     }
@@ -87,13 +87,13 @@ export default function Dashboard() {
         </View>
         <View style={styles.main_body2}>
           <ScrollView vertical>
-          {data.map((a)=>(
-            <PasswordCard object={a}></PasswordCard>
+          {data.map((a, index)=>(
+            <Dropdown key={index} domainName={a.domain} username={a.username} password={a.password} />
           ))}
           </ScrollView>
         </View>
+        <AddPasswordModal visible={isVisible}/>
       </View>
-      <PasswordPopup Visiblity={isVisible}></PasswordPopup>
       <View style={styles.footer}>
         <Button onPress={handleNewPassword} btnText={'Add a new Password'}/>
       </View>

@@ -30,11 +30,11 @@ export const Icons = {
 }
 
 export const data = [
-    {domain:'Google', username:'kleo24@gmail.com', password:'Himanish@123'},
-    {domain:'Facebook', username:'8390897087', password:'Himanish123'},
-    {domain:'Github', username:'kleocode', password:'kleo@24'},
-    {domain:'Instagram', username:'2kleo', password:'Himanish@240978'},
-    {domain:'Tinder', username:'HimanishMore', password:'Himanish123'},
-    {domain:'Epic Games', username:'kleololxdded', password:'Himanish@123'}
+    {domain:'http://www.google.com', username:'kleo24@gmail.com', password:'Himanish@123'},
+    {domain:'http://www.facebook.com', username:'8390897087', password:'Himanish123'},
+    {domain:'http://www.github.com', username:'kleocode', password:'kleo@24'},
+    {domain:'http://www.instagram.com', username:'2kleo', password:'Himanish@240978'},
+    {domain:'http://www.tinder.com', username:'HimanishMore', password:'Himanish123'},
+    {domain:'http://www.epicgames.com', username:'kleololxdded', password:'Himanish@123'}
 
 ]

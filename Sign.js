@@ -14,55 +14,26 @@ const API_URL = 'http://192.168.1.6:3000';
 export default function Sign() {
     const [username,setUsername] = useState('')
     const [password,setPassword] = useState('')
+    const [name, setname] = useState('')
     const navigation = useNavigation();
     const [loggedIn, setLoggedIn] = useState(false);
 
-    // const handleLogin = async () => {
-    //   try {
-    //     const response = await axios.post(`${API_URL}/login`, { username, password });
-    //     const { success, token, message } = response.data;
-    //     if (success) {
-    //       console.log('Logged in successfully:', token);
-    //       // TODO: navigate to protected screen or set auth token in state
-    //     } else {
-    //       console.log(message);
-    //     }
-    //   } catch (err) {
-    //     console.error('Login failed:', err);
-    //     alert('An error occurred while logging in');
-    //   }
-    // };
-
-    
     const handleLoginPress = async () => {
-      axios.post(`${API_URL}/login`, { username, password })
-      .then((res) => {
-        setLoggedIn(res.data);
-        if(loggedIn){
-          console.log('logged in successfully')
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      navigation.navigate('Dashboard')
+      // axios.post(`${API_URL}/login`, { username, password })
+      // .then((res) => {
+      //   setLoggedIn(res.data);
+      //   if(loggedIn){
+      //     console.log('logged in successfully')
+      //   }
+      // })
+      // .catch((err) => {
+      //   console.log(err);
+      // });
     };
-    // const handleLoginPress = async () => {
-    //   try{
-    //     axios.post(`${API_URL}/login`,{
-    //       username:username,
-    //       password:password
-    //     })
-    //     .then(function (res) {
-    //       console.log(res.data.message)
-    //     })
-    //     .catch (function (err){
-    //       console.log(err)
-    //     })
-    //   }
-    //   catch(err){
-
-    //   }
-    // };
+    const handleNameInputChange = (name) => {
+        setname(name)
+    }
     const handleUsernameInputChange = (username) => {
         setUsername(username)
     };
@@ -98,13 +69,22 @@ export default function Sign() {
           </Text>
         </View>
         <View style={styles.inpcontainer}>
-          <TextInp
+          <TextInp 
+            icon={'user'}
+            value={username}
+            name={"Name"}
+            placeholder={"Your name here"}
+            oCText={handleNameInputChange}
+          ></TextInp>
+          <TextInp 
+            icon={'at'}
             value={username}
             name={"Username"}
             placeholder={"Your username here"}
             oCText={handleUsernameInputChange}
           ></TextInp>
           <TextInp
+            icon={'lock'}
             value={password}
             name={"Password"}
             placeholder={"Your password here"}

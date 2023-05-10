@@ -16,28 +16,31 @@ export default function Register() {
         <View style={styles.title}>
             <Text style={{
                 color:'white',
-                fontFamily:'intersemibold',
+                fontFamily:'intertbold',
                 fontSize:30,
-            }}>Register with your details</Text>
+            }}>Register with your details.</Text>
         </View>
         <View style={styles.body}>
-            <TextInp name={'Name'} placeholder={'Your name here'} type={'default'}></TextInp>
-            <TextInp name={'Email'} placeholder={'Your email here'} type={'email-address'}></TextInp>
-            <TextInp name={'Password'} placeholder={'Your password here'} type={'default'}></TextInp>
-            <TextInp name={'Confirm password'} placeholder={'Repeat password'} type={'default'}></TextInp>
+            <TextInp icon={'user'} name={'Name'} placeholder={'Your name here'} type={'default'}></TextInp>
+            <TextInp icon={'inbox'} name={'Email'} placeholder={'Your email here'} type={'email-address'}></TextInp>
+            <TextInp icon={'lock'} name={'Password'} placeholder={'Your password here'} type={'default'} pass={true}></TextInp>
+            <TextInp icon={'lock'} name={'Confirm password'} placeholder={'Repeat password'} type={'default'} pass={true}></TextInp>
             
         </View>
         <View style={styles.footer}>
             <View style={{
-                marginTop:20,
+                //marginTop:20,
             }}>
                 <Button btnText='Register'></Button>
             </View>
             <Text style={{
                 color:'white',
+                marginTop:10,
+                fontFamily:'intertmedium'
             }}>Already have an account? 
                 <Text onPress={handleLoginPress} style={{
                     color:Colours.primary,
+                    fontFamily:'intertbold'
                 }}> Log in</Text>
             </Text>
         </View>
@@ -56,14 +59,18 @@ const styles = StyleSheet.create({
         //backgroundColor: 'gray',
     },
     body:{
-        flex:5,
+        flex:6,
         alignItems:'center',
         justifyContent: 'center',
         //backgroundColor: 'gray',
     },
     footer:{
         flex:2,
-        alignItems:'center',
+        borderTopRightRadius:30,
+        borderTopLeftRadius:30,
+        backgroundColor:'#1C1C1C',
+        display:'flex',
+        alignItems: 'center',
         justifyContent: 'center',
     }
     
