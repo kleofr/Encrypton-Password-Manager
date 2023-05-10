@@ -1,30 +1,31 @@
-const http = require("http");
+const bodyParser = require("body-parser");
 const express = require("express")
 const mysql = require("mysql");
 const {spawn} = require("child_process");
-
-
-
+const app = express()
+const port = 3000
 function getData(type, original_data, callback) {
     let py = spawn("python", [
-        "C:/Users/MIHIR/.vscode/password-manager/AES.py",
+        "C:/Users/MIHIR/.vscode/password-manager/encrypton/AES.py",
         type,
         original_data,
     ]);
     let result = [];
-
+    
     py.stdout.on("data", (data) => {
+        
         result.push(...data.toString().split(""));
     });
 
     py.stderr.on("data", (data) => {
+        console.log(data.toString()+"UwU")
         callback(data.toString(), null);
     });
 
     py.on("close", (code) => {
         if (code !== 0) {
             callback(`Process exited with code ${code}`, null);
-        }
+        }   
         resultstr = result.join("");
         const regex = /[\[\]']/g;
         r = resultstr.replace(regex, "");
@@ -44,14 +45,6 @@ function getData(type, original_data, callback) {
         callback(null, arr);
     });
 }
-//getData("encrypt",["MihirP007", "MihirP007", "www.genshin.com", "Mihir123@"],(error,data)=>{console.log(data);})
-//getData("decrypt",['gAAAAABkQf7Z3P0nPNn4dx9xtnzml1L1YWh1q76zpzRmm94POpcS83Gv35CCWujTHZX2yU0f1hcD6vBMVqDTzhZrAQQeuAtvlqLqW6Wnc2vF_20b3kfZ8Zs='],(error,data)=>{console.log(data)})
-
-// let server = http.createServer(function (req, res) {
-// }).listen(8000);
-
-const app = express()
-const port = 8000
 
 let con = mysql.createConnection({
     host: "localhost",
@@ -59,18 +52,19 @@ let con = mysql.createConnection({
     password: "root",
     database: "passwordmanager",
 });
-        
-con.connect(function(err) {
 
+con.connect(function(err) {
+    
     function verifyLogin(
         txt_unverified_username,
         txt_unverified_password,
         txt_name,
         callback
     ) {
+        
         let q = "SELECT * FROM login_creds WHERE Name = ?";
         con.query(q, [txt_name], (error, data) => {
-            let bool = false;
+            let bool = false;   
             for (let i = 0; i < data.length; i++) {
                 let row = data[i];
                 getData(
@@ -317,51 +311,67 @@ con.connect(function(err) {
             }
         })
     }
-    // verifyLogin("KrishNana","Nana2004RCBfan","Krish",(data)=>{
-    //               console.log(data);
-    //             })
-    app.get("/login",(req,res)=>{
+    app.use(bodyParser.json())
+    app.post("/login",(req,res)=>{
         let {
-            txt_unverified_username,
-            txt_unverified_password,
-            txt_name
+            username,
+            password,
+            name
         } = req.body
-        verifyLogin(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
-            res.send(result);
+        console.log([username, password, name])
+        verifyLogin(username,password,name, (error, result) => {
+            console.log("The login is :"+result)
+            res.json({"status":result});
         })
     });
-    app.get("/register",(req,res)=>{
+    app.post("/register",(req,res)=>{
         let {
-            txt_unverified_username,
-            txt_unverified_password,
-            txt_name
+            username,
+            password,
+            name
         } = req.body
-        register(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
-            res.send(result)
+        register(username,password,name, (error, result) => {
+            if(result==="User is Registered") res.json({"status":true , "Error_message":null})
+            else res.json({"status":false,"error_message":result});
         })
     });
-    app.get("/home",(req,res)=>{
+    app.post("/home",(req,res)=>{
         let {
-            txt_unverified_username
+            username
             } = req.body
-        res.send(getAllDataOfAUser(txt_unverified_username));
+        let result = getAllDataOfAUser(username);
+        if(result != "No passwords matched") res.json({"status":true,"data":result})
+        else res.json({"status":false,"data":result})
     });
-    app.get("/add",(req,res)=>{
+    app.post("/add",(req,res)=>{
         let {
             accountusername,
-            txt_username, 
+            username, 
             domain,
             password
         } = req.body
-        storeAPassword(accountusername, txt_username, domain, password, (error, result) => {
-            res.send(result)
+        storeAPassword(accountusername, username, domain, password, (error, result) => {
+            if(result==="Password has been stored") res.json({"status":true,"error_message":null});
+            else res.json({"status":false,"error_message":result});
         })
     });
     app.listen(port,()=>{
         console.log("server is live")
     });
-    
 });
 
 
+// getData("decrypt",[
+//     'gAAAAABkW-3jYdWI_P7SbrJPjQP2TKThisKraYQhL5iVXBUej_yUV8kqauRqJTK18JugcD_EplgVTBy25N7MMJFapbiGnJJb1cKyo3kq2CSO7_qS33A2zL0=',
+//     'gAAAAABkW-3jPeZiL1nL7mNYLSQ7a5UOl-Ik2SsNMFNVr6yJbdQRoYJPFel1BiWNkewFm3bb5YFFtza1N-fpd9qJkZNc4yoOFdjZH8-5WWoMUyOsQoJG-Vic7QaFcgtvepYxdROvqNCN',
+//     'gAAAAABkW-3ji1ucfAQru_2twdiGIeXoNeccGhxOvA-E9Gxhqfi9Sh063ue_mKSZxHKR-2LXGzzPDC7CtCs8Mqob3O1mZE0amgwaxpmVY9H2rG8vRUBO5Io='
+//   ],(error,data)=>{
+//     console.log(data);
+// })
+// getData("encrypt",['MihirP007','Mihir123@'],(error,data)=>{console.log(data)})
 
+//MihirP007 => gAAAAABkW_hrb3j7n-P0bIKBuqxdGLkH9vyXTKtceui07d_NPnw5LC6-x7tOYoAagAVLRZmrD6FyhxQapheZLIAHro-Nz9GIkD8gBzXayryVHXs6ULYs92A=
+
+//Mihir123@ => gAAAAABkW_hrPobq0ef5BJvQj3LBEb_e2X2LxFv22wcsx5imQXuzr6i7Z7mOaETVqvxZRgpxz6tOZpWk7V-6v3mJ1jlmkeu70SUH4IElHZd7BCLW7QfetdA=
+
+//Mihir

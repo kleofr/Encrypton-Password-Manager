@@ -3,20 +3,17 @@ from Crypto.Cipher import AES
 from Crypto.Util import Padding
 from cryptography.fernet import Fernet
 
-
 def completeEncryption(key_AES, iv, data, fernet_obj):
     cipher = AES.new(key_AES, AES.MODE_CBC, iv)
     ciphered_text_lvl1 = cipher.encrypt(Padding.pad(data, AES.block_size))
     ciphered_text_lvl2 = fernet_obj.encrypt(ciphered_text_lvl1)
     return ciphered_text_lvl2
 
-
 def completeDecryption(key_AES, iv, encrypted_data, fernet_obj):
     cipher = AES.new(key_AES, AES.MODE_CBC, iv)
     ciphered_text_lvl1 = fernet_obj.decrypt(encrypted_data)
     result = Padding.unpad(cipher.decrypt(ciphered_text_lvl1),AES.block_size)
     return result
-
 
 with open('passwords.bin', 'rb') as reader:
     iv = reader.read(16)
@@ -41,7 +38,6 @@ def decrypt(data):
         decrypted.append(el.decode())
     return decrypted
 
-
 def merge_until_comma(lst):
     result = []
     current_string = ""
@@ -56,6 +52,9 @@ def merge_until_comma(lst):
         result.append(current_string)
     return result
 
+
+
+# print(decrypt(['gAAAAABkW-n-9xjVcRehQFjr8kw1eHj2khApgF2Tbo-gukZbH9OL6IQvWguiWpqOZXF_FueE8BAy2aw_bsNieFQWxtWg0bkT0HmVNeX-OzfpuCFFNWVZifo=']))
 
 if(sys.argv[1] == "encrypt"):
     print(encrypt(merge_until_comma(sys.argv[2])))

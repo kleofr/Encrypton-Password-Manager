@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { client } from './Client';
 
-const API_URL = 'http://192.168.1.6:3000';
+const API_URL = 'http://192.168.0.111:3000';
 
 export default function Sign() {
     const [username,setUsername] = useState('')
@@ -19,17 +19,15 @@ export default function Sign() {
     const [loggedIn, setLoggedIn] = useState(false);
 
     const handleLoginPress = async () => {
-      navigation.navigate('Dashboard')
-      // axios.post(`${API_URL}/login`, { username, password })
-      // .then((res) => {
-      //   setLoggedIn(res.data);
-      //   if(loggedIn){
-      //     console.log('logged in successfully')
-      //   }
-      // })
-      // .catch((err) => {
-      //   console.log(err);
-      // });
+      console.log([name,username,password])
+      // navigation.navigate('Dashboard')
+      axios.post(`${API_URL}/login`, { name, username, password })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     };
     const handleNameInputChange = (name) => {
         setname(name)
@@ -71,7 +69,7 @@ export default function Sign() {
         <View style={styles.inpcontainer}>
           <TextInp 
             icon={'user'}
-            value={username}
+            value={name}
             name={"Name"}
             placeholder={"Your name here"}
             oCText={handleNameInputChange}
