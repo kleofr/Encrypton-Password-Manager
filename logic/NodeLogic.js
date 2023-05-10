@@ -1,9 +1,7 @@
-const http = require("http");
+const bodyParser = require("body-parser");
 const express = require("express")
 const mysql = require("mysql");
 const {spawn} = require("child_process");
-
-
 
 function getData(type, original_data, callback) {
     let py = spawn("python", [
@@ -44,11 +42,6 @@ function getData(type, original_data, callback) {
         callback(null, arr);
     });
 }
-//getData("encrypt",["MihirP007", "MihirP007", "www.genshin.com", "Mihir123@"],(error,data)=>{console.log(data);})
-//getData("decrypt",['gAAAAABkQf7Z3P0nPNn4dx9xtnzml1L1YWh1q76zpzRmm94POpcS83Gv35CCWujTHZX2yU0f1hcD6vBMVqDTzhZrAQQeuAtvlqLqW6Wnc2vF_20b3kfZ8Zs='],(error,data)=>{console.log(data)})
-
-// let server = http.createServer(function (req, res) {
-// }).listen(8000);
 
 const app = express()
 const port = 8000
@@ -318,35 +311,33 @@ con.connect(function(err) {
             }
         })
     }
-    // verifyLogin("KrishNana","Nana2004RCBfan","Krish",(data)=>{
-    //               console.log(data);
-    //             })
+    app.use(bodyParser.json())
     app.post("/login",(req,res)=>{
         let {
-            txt_unverified_username,
-            txt_unverified_password,
-            txt_name
+            username,
+            password,
+            name
         } = req.body
-        verifyLogin(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
+        verifyLogin(username,password,name, (error, result) => {
             res.json({"status":result});
         })
     });
     app.post("/register",(req,res)=>{
         let {
-            txt_unverified_username,
-            txt_unverified_password,
-            txt_name
+            username,
+            password,
+            name
         } = req.body
-        register(txt_unverified_username, txt_unverified_password, txt_name, (error, result) => {
+        register(username,password,name, (error, result) => {
             if(result==="User is Registered") res.json({"status":true , "Error_message":null})
             else res.json({"status":false,"error_message":result});
         })
     });
     app.post("/home",(req,res)=>{
         let {
-            txt_unverified_username
+            username
             } = req.body
-        let result = getAllDataOfAUser(txt_unverified_username);
+        let result = getAllDataOfAUser(username);
         if(result != "No passwords matched") res.json({"status":true,"data":result})
         else res.json({"status":false,"data":result})
     });
@@ -357,7 +348,7 @@ con.connect(function(err) {
             domain,
             password
         } = req.body
-        storeAPassword(accountusername, txt_username, domain, password, (error, result) => {
+        storeAPassword(accountusername, username, domain, password, (error, result) => {
             if(result==="Password has been stored") res.json({"status":true,"error_message":null});
             else res.json({"status":false,"error_message":result});
         })
@@ -366,3 +357,14 @@ con.connect(function(err) {
         console.log("server is live")
     });
 });
+
+
+//getData("encrypt",["MihirP007", "MihirP007", "www.genshin.com", "Mihir123@"],(error,data)=>{console.log(data);})
+//getData("decrypt",['gAAAAABkQf7Z3P0nPNn4dx9xtnzml1L1YWh1q76zpzRmm94POpcS83Gv35CCWujTHZX2yU0f1hcD6vBMVqDTzhZrAQQeuAtvlqLqW6Wnc2vF_20b3kfZ8Zs='],(error,data)=>{console.log(data)})
+
+// let server = http.createServer(function (req, res) {
+// }).listen(8000);
+
+    // verifyLogin("KrishNana","Nana2004RCBfan","Krish",(data)=>{
+    //               console.log(data);
+    //             })
